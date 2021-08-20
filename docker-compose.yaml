@@ -1,44 +1,37 @@
-version: "3.9"
+version: "3"
 services:
     nodejs:
-        build:
-            context: .
-        image: edcelmanuel9/docker-test
-        networks:
-            - frontend
-            - backend
+        image: edcelmanuel9/docker-test:1.0
         ports:
             - "3220:3220"
-        container_name: moe-nodejs-app
-    mysql:
+        restart: on-failure
+        container_name: cvl
+    db:
         image: mysql
-        command: --default-authentication-plugin=mysql_native_password --init-file /data/application/init.sql
-        volumes:
-            - ./init.sql:/data/application/init.sql
-        networks:
-            - backend
+        container_name: db
         environment:
             MYSQL_ROOT_PASSWORD: Comtechie1998
             MYSQL_DATABASE: cvl
+            MYSQL_USER: edcelmanuel9
+            MYSQL_PASSWORD: Comtechie1998
         ports:
-            - "3306:3306"
-        cap_add:
-            - SYS_NICE # CAP_SYS_NICE
-        container_name: node-mysql
-    phpmyadmin:
-        image: phpmyadmin/phpmyadmin:4.7
-        depends_on:
-            - mysql
-        networks:
-            - backend
-        ports:
-            - "3308:80"
-        environment:
-            - PMA_HOST=node-mysql
-            - PMA_PORT=3306
+            - 3306:3306
+        # command: --init-file /data/application/init.sql --init-file /data/application/cvl.sql
         volumes:
-            - /sessions
-        container_name: moe-phpmyadmin-app
-networks:
-    frontend:
-    backend:
+            # - ./init.sql:/data/application/init.sql
+            # - ./cvl.sql:/data/application/cvl.sql
+            - mysql-data:/var/lib/mysql
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: pma
+        links:
+            - db
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1
+        restart: always
+        ports:
+            - 8081:80
+volumes:
+    mysql-data:
