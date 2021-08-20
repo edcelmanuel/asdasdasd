@@ -1,11 +1,11 @@
-version: "3"
+version: "3.1"
 services:
     nodejs:
         image: edcelmanuel9/docker-test:1.0
         ports:
             - "3220:3220"
         restart: on-failure
-        container_name: cvl
+        container_name: cvl-rest-api
     db:
         image: mysql
         container_name: db
@@ -15,12 +15,10 @@ services:
             MYSQL_USER: edcelmanuel9
             MYSQL_PASSWORD: Comtechie1998
         ports:
-            - 3306:3306
-        command: --init-file /data/application/init.sql --init-file /data/application/cvl.sql
+            - "3306:3306"
         volumes:
-            - ./init.sql:/data/application/init.sql
-            - ./cvl.sql:/data/application/cvl.sql
-            - mysql-data:/var/lib/mysql
+            - ./query:/docker-entrypoint-initdb.d
+            - C:\data\mysql_db:/var/lib/mysql/
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         container_name: pma
@@ -33,5 +31,3 @@ services:
         restart: always
         ports:
             - 8081:80
-volumes:
-    mysql-data:

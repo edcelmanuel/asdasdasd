@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `master` (
   `precinct` tinytext,
   `barangay` tinytext,
   `city` tinytext,
+  `tag` json,
   `added_by` tinytext,
   `added_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uid`)
