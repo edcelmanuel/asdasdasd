@@ -1,12 +1,12 @@
 const pool = require("./mydb")
 const { isEmptyObject } = require("./functions")
 
-const getAllUsers = (req, res) => {
+const getAllMember = (req, res) => {
     pool.getConnection((err, connection) => {
         if (err) throw console.log(err)
         console.log(`connected as id ${connection.threadId}`)
 
-        connection.query("SELECT * FROM users ", (err, rows) => {
+        connection.query("SELECT * FROM members ", (err, rows) => {
             connection.release()
 
             if (err) {
@@ -18,31 +18,26 @@ const getAllUsers = (req, res) => {
     })
 }
 
-const insertUser = (req, res) => {
+const insertMember = (req, res) => {
     pool.getConnection((err, connection) => {
         if (err) throw console.log(err)
         console.log(`connected as id ${connection.threadId}`)
 
         const params = {
-            user: req.body.user,
-            pass: req.body.pass,
-            email: req.body.email,
-            name: req.body.name,
-            name_first: req.body.name_first,
-            name_middle: req.body.name_middle,
-            name_last: req.body.name_last,
-            res: req.body.res,
-            sex: req.body.sex,
-            role: "",
-            picture: `https://avatars.dicebear.com/api/${req.body.sex}/${
-                req.body.name_first + req.body.name_middle + req.body.name_last
-            }.svg`,
-            pending: "pending",
-            access: "{}",
-            added_by: "",
+            email: req.body.email.trim(),
+            name: `${req.body.name_last.trim()}, ${req.body.name_first.trim()} ${req.body.name_middle}`,
+            name_last: req.body.name_last.trim(),
+            name_first: req.body.name_first.trim(),
+            name_middle: req.body.name_middle.trim(),
+            res: req.body.res.trim(),
+            mun: req.body.mun.trim(),
+            brgy: req.body.brgy.trim(),
+            prec: req.body.prec.trim(),
+            contact: req.body.contact.trim(),
+            picture: ``,
         }
 
-        connection.query("INSERT INTO users SET ?", params, (err, rows) => {
+        connection.query("INSERT INTO members SET ?", params, (err, rows) => {
             connection.release()
 
             if (err) {
@@ -51,7 +46,7 @@ const insertUser = (req, res) => {
             }
             res.json({
                 status: "success",
-                message: `Username ${params.user} has been ADDED by ${params.added_by}.`,
+                message: `Successfully added to Members`,
             })
         })
 
@@ -59,7 +54,7 @@ const insertUser = (req, res) => {
     })
 }
 
-const findUserByID = (req, res) => {
+const findMemberByID = (req, res) => {
     pool.getConnection((err, connection) => {
         if (err) throw console.log(err)
         console.log(`connected as id ${connection.threadId}`)
@@ -78,7 +73,7 @@ const findUserByID = (req, res) => {
     })
 }
 
-const updateUser = (req, res) => {
+const updateMember = (req, res) => {
     pool.getConnection((err, connection) => {
         if (err) throw console.log(err)
         console.log(`connected as id ${connection.threadId}`)
@@ -107,4 +102,4 @@ const updateUser = (req, res) => {
     })
 }
 
-module.exports = { findUserByID, getAllUsers, insertUser, updateUser }
+module.exports = { findMemberByID, getAllMember, insertMember, updateMember }

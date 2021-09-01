@@ -1,7 +1,7 @@
 version: "3.1"
 services:
     nodejs:
-        image: edcelmanuel9/docker-test:1.0
+        image: membership:1.0
         ports:
             - "3220:3220"
         restart: on-failure
@@ -17,8 +17,8 @@ services:
         ports:
             - "3306:3306"
         volumes:
-            - ./query:/docker-entrypoint-initdb.d
-            - C:\data\mysql_db:/var/lib/mysql/
+            - ./data:/var/lib/mysql/
+            # - ./query:/docker-entrypoint-initdb.d
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         container_name: pma

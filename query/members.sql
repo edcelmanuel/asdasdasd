@@ -28,22 +28,20 @@ SET time_zone = "+00:00";
 -- Table structure for table `master`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE IF NOT EXISTS `members` (
   `uid` int NOT NULL AUTO_INCREMENT,
-  `user` tinytext,
-  `pass` tinytext,
-  `email` tinytext,
   `name` mediumtext,
   `name_first` mediumtext,
   `name_middle` mediumtext,
   `name_last` mediumtext,
   `res` mediumtext,
-  `role` tinytext,
+  `mun` tinytext,
+  `brgy` tinytext,
+  `prec` tinytext,
+  `email` tinytext,
+  `contact` tinytext,
   `sex` tinytext,
   `picture` tinytext,
-  `pending` tinytext,
-  `access` json DEFAULT NULL,
-  `added_by` tinytext,
   `added_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -51,7 +49,3 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 -- Dumping data for table `master`
 --
-
-INSERT INTO `users` (`access`, `added_by`, `added_time`, `email`, `name`, `name_first`, `name_middle`, `name_last`, `res`, `sex`, `pass`, `picture`, `role`, `user`, `pending`) VALUES
- ('{"1": true}', 'dev', '2021-08-17 20:15:47', 'edcelmanuel9@gmail.com', 'john carl edcel manuel',  'John Carl Edcel', 'Ancheta', 'Manuel', '' , 'male', 'comtechie', '', 'dev', 'edcelmanuel9', 'approved'),
- ('{"1": true}', 'dev', '2021-08-17 20:47:07', 'edcelmanuel9@gmail.com', 'john edwin manuel',  'John Edwin', 'Ancheta', 'Manuel', '', 'male', 'elprimo12', '', 'dev', 'intoymanuel', 'approved');
