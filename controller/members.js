@@ -102,4 +102,27 @@ const updateMember = (req, res) => {
     })
 }
 
-module.exports = { findMemberByID, getAllMember, insertMember, updateMember }
+const searchMember = (req, res) => {
+    pool.getConnection((err, connection) => {
+        if (err) throw console.log(err)
+        console.log(`connected as id ${connection.threadId}`)
+
+        const search = `%${req.body.search}%`
+
+        connection.query(
+            "SELECT * FROM members WHERE uid like ? OR name_first like ? OR name_middle like ? OR name_last like ? OR res like ? OR mun like ? OR brgy like ? OR prec like ? OR email like ?",
+            [search, search, search, search, search, search, search, search, search],
+            (err, rows) => {
+                connection.release()
+
+                if (err) {
+                    res.sendStatus(400)
+                    return console.log(err)
+                }
+                res.json(rows)
+            }
+        )
+    })
+}
+
+module.exports = { findMemberByID, getAllMember, insertMember, updateMember, searchMember }
