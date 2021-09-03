@@ -1,5 +1,7 @@
 const pool = require("./mydb")
-const { isEmptyObject } = require("./functions")
+const { base64_encode } = require("./functions")
+const pdf2base64 = require("pdf-to-base64")
+const fs = require("fs")
 
 const getAllMember = (req, res) => {
     pool.getConnection((err, connection) => {
@@ -14,6 +16,41 @@ const getAllMember = (req, res) => {
                 return console.log(err)
             }
             res.json(rows)
+        })
+    })
+}
+
+const getMemberByPage = (req, res) => {
+    pool.getConnection((err, connection) => {
+        if (err) throw console.log(err)
+        console.log(`connected as id ${connection.threadId}`)
+
+        const page = (req.params.page - 1) * 10
+        connection.query("SELECT * FROM members LIMIT ? ,10; ", [page], (err, rows1) => {
+            connection.release()
+            let count
+            connection.query("SELECT count(*) as count FROM members", [page], (err, rows2) => {
+                connection.release()
+                count = rows2[0].count
+
+                if (err) {
+                    res.sendStatus(400)
+                    return console.log(err)
+                }
+
+                let newRows = []
+                rows1.forEach(function (arrayItem) {
+                    const imageAsBase64 = fs.readFileSync(
+                        `public/public/membersPicture/` + `${arrayItem.uid}` + `.jpg`,
+                        "base64"
+                    )
+
+                    arrayItem.picture = imageAsBase64
+                    newRows.push(arrayItem)
+                })
+
+                res.json({ rows: newRows, count: count })
+            })
         })
     })
 }
@@ -37,20 +74,62 @@ const insertMember = (req, res) => {
             picture: ``,
         }
 
-        connection.query("INSERT INTO members SET ?", params, (err, rows) => {
-            connection.release()
+        const base64Picture = req.body.picture
 
-            if (err) {
-                res.sendStatus(400)
-                return console.log(err)
+        connection.query(
+            "select uid from members where name_last = ? and name_first = ? and name_middle = ?",
+            [params.name_last, params.name_first, params.name_middle],
+            (err, rows) => {
+                connection.release()
+
+                if (err) {
+                    res.sendStatus(400)
+                    return console.log(err)
+                }
+
+                if (rows === undefined || rows.length == 0) {
+                    connection.query("INSERT INTO members SET ?", params, (err, rows) => {
+                        connection.release()
+
+                        if (err) {
+                            res.sendStatus(400)
+                            return console.log(err)
+                        }
+
+                        connection.query(
+                            "select uid from members where name_last = ? and name_first = ? and name_middle = ?",
+                            [params.name_last, params.name_first, params.name_middle],
+                            (err, rows) => {
+                                connection.release()
+
+                                const filepath = `public/public/membersPicture/${rows[0].uid.toString()}.jpg`
+
+                                if (err) {
+                                    res.sendStatus(400)
+                                    return console.log(err)
+                                }
+
+                                var base64Data = base64Picture.replace(/^data:image\/jpeg;base64,/, "")
+
+                                require("fs").writeFile(filepath, base64Data, "base64", function (err) {
+                                    console.log(err)
+                                })
+
+                                res.json({
+                                    status: "success",
+                                    message: `Successfully added to Members`,
+                                })
+                            }
+                        )
+                    })
+                } else {
+                    res.json({
+                        status: "failed",
+                        message: `Name Already Registered`,
+                    })
+                }
             }
-            res.json({
-                status: "success",
-                message: `Successfully added to Members`,
-            })
-        })
-
-        console.log(req.body)
+        )
     })
 }
 
@@ -59,7 +138,7 @@ const findMemberByID = (req, res) => {
         if (err) throw console.log(err)
         console.log(`connected as id ${connection.threadId}`)
 
-        connection.query("SELECT * FROM users WHERE uid = ?", [req.params.uid], (err, rows) => {
+        connection.query("SELECT * FROM members WHERE uid = ?", [req.params.uid], (err, rows) => {
             connection.release()
 
             if (err) {
@@ -87,7 +166,7 @@ const updateMember = (req, res) => {
             added_by: req.body.added_by,
         }
 
-        connection.query("UPDATE users SET ? WHERE uid = ?", [params, req.params.uid], (err, rows) => {
+        connection.query("UPDATE members SET ? WHERE uid = ?", [params, req.params.uid], (err, rows) => {
             connection.release()
 
             if (err) {
@@ -108,21 +187,48 @@ const searchMember = (req, res) => {
         console.log(`connected as id ${connection.threadId}`)
 
         const search = `%${req.body.search}%`
+        const page = (req.params.page - 1) * 10
 
         connection.query(
-            "SELECT * FROM members WHERE uid like ? OR name_first like ? OR name_middle like ? OR name_last like ? OR res like ? OR mun like ? OR brgy like ? OR prec like ? OR email like ?",
-            [search, search, search, search, search, search, search, search, search],
-            (err, rows) => {
+            "SELECT * FROM members WHERE uid like ? OR name_first like ? OR name_middle like ? OR name_last like ? OR res like ? OR mun like ? OR brgy like ? OR prec like ? OR email like ? LIMIT ? ,10;",
+            [search, search, search, search, search, search, search, search, search, page],
+            (err, rows1) => {
                 connection.release()
 
-                if (err) {
-                    res.sendStatus(400)
-                    return console.log(err)
-                }
-                res.json(rows)
+                let count
+
+                connection.query(
+                    "SELECT count(*) as count FROM members WHERE uid like ? OR name_first like ? OR name_middle like ? OR name_last like ? OR res like ? OR mun like ? OR brgy like ? OR prec like ? OR email like ?",
+                    [search, search, search, search, search, search, search, search, search, page],
+                    (err, rows2) => {
+                        connection.release()
+
+                        count = rows2[0].count
+
+                        if (err) {
+                            res.sendStatus(400)
+                            return console.log(err)
+                        }
+
+                        let newRows = []
+                        rows1.forEach(function (arrayItem) {
+                            const imageAsBase64 = fs.readFileSync(
+                                `public/public/membersPicture/` + `${arrayItem.uid}` + `.jpg`,
+                                "base64"
+                            )
+
+                            arrayItem.picture = imageAsBase64
+                            newRows.push(arrayItem)
+                        })
+
+                        // console.log(newRows)
+
+                        res.json({ rows: newRows, count: count })
+                    }
+                )
             }
         )
     })
 }
 
-module.exports = { findMemberByID, getAllMember, insertMember, updateMember, searchMember }
+module.exports = { findMemberByID, getAllMember, insertMember, updateMember, searchMember, getMemberByPage }

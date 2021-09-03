@@ -12,10 +12,11 @@ const usersRoute = require("./routes/users")
 const queryRoute = require("./routes/query")
 const pdfRoute = require("./routes/pdf")
 const membersRoute = require("./routes/members")
-// express.static(root, [options])
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+// express.static(root, [options])
+app.use(bodyParser.json({ limit: "50mb" }))
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }))
+
 // Add headers
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
@@ -33,6 +34,8 @@ app.use(function (req, res, next) {
     // Set to true if you need the website to include cookies in the requests sent
     // to the API (e.g. in case you use sessions)
     res.setHeader("Access-Control-Allow-Credentials", true)
+    res.contentType("application/json")
+    // res.responseType("arraybuffer")
 
     // Pass to next layer of middleware
     next()

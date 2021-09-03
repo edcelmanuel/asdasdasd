@@ -8,7 +8,9 @@ router
     .get(authToken, memberCtrl.getAllMember) // Get Users Table
     .post(memberCtrl.insertMember) // Insert User
 
-router.route("/search").post(authToken, memberCtrl.searchMember)
+router.route("/search/:page").post(authToken, memberCtrl.searchMember)
+
+router.route("/page/:page").get(authToken, memberCtrl.getMemberByPage)
 
 router
     .route("/:uid")

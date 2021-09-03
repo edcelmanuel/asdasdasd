@@ -11,12 +11,16 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "canvas": "^2.8.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "js-base64": "^3.6.1",
     "jsonwebtoken": "^8.5.1",
     "jspdf": "^2.3.1",
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "pdf-to-base64": "^1.0.3",
+    "pdfmake": "^0.2.2"
   }
 }
