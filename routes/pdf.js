@@ -183,7 +183,7 @@ function savePdfToFile(pdf, fileName) {
     })
 }
 
-router.get("/member/:uid", getIDMemberPDF)
+router.post("/member", getIDMemberPDF)
 router.get("/template", getPDF)
 
 module.exports = router
