@@ -79,7 +79,7 @@ const insertMember = (req, res) => {
         connection.query(
             "select uid from members where name_last = ? and name_first = ? and name_middle = ?",
             [params.name_last, params.name_first, params.name_middle],
-            (err, rows) => {
+            (err, rows1) => {
                 connection.release()
 
                 if (err) {
@@ -87,8 +87,8 @@ const insertMember = (req, res) => {
                     return console.log(err)
                 }
 
-                if (rows === undefined || rows.length == 0) {
-                    connection.query("INSERT INTO members SET ?", params, (err, rows) => {
+                if (rows1 === undefined || rows.length == 0) {
+                    connection.query("INSERT INTO members SET ?", params, (err, rows2) => {
                         connection.release()
 
                         if (err) {
@@ -99,10 +99,10 @@ const insertMember = (req, res) => {
                         connection.query(
                             "select uid from members where name_last = ? and name_first = ? and name_middle = ?",
                             [params.name_last, params.name_first, params.name_middle],
-                            (err, rows) => {
+                            (err, rows3) => {
                                 connection.release()
 
-                                const filepath = `public/public/membersPicture/${rows[0].uid.toString()}.jpg`
+                                const filepath = `public/public/membersPicture/${rows3[0].uid.toString()}.jpg`
 
                                 if (err) {
                                     res.sendStatus(400)

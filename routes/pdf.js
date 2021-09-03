@@ -57,9 +57,9 @@ const getIDMemberPDF = async (req, res) => {
         if (err) throw console.log(err)
         console.log(`connected as id ${connection.threadId}`)
 
-        const uid = req.params.uid
+        const uid = req.body.uid
 
-        connection.query("SELECT * FROM members WHERE uid = ?", [req.params.uid], async (err, rows) => {
+        connection.query("SELECT * FROM members WHERE uid = ?", [uid], async (err, rows) => {
             connection.release()
 
             if (err) {
