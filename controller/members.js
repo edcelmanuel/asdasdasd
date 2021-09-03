@@ -87,7 +87,7 @@ const insertMember = (req, res) => {
                     return console.log(err)
                 }
 
-                if (rows1 === undefined || rows.length == 0) {
+                if (rows1 === undefined || rows1.length == 0) {
                     connection.query("INSERT INTO members SET ?", params, (err, rows2) => {
                         connection.release()
 
