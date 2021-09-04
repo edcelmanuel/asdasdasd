@@ -66,6 +66,7 @@ const insertMember = (req, res) => {
             name_last: req.body.name_last.trim(),
             name_first: req.body.name_first.trim(),
             name_middle: req.body.name_middle.trim(),
+            bday: req.body.bday,
             res: req.body.res.trim(),
             mun: req.body.mun.trim(),
             brgy: req.body.brgy.trim(),
@@ -181,12 +182,18 @@ const updateMember = (req, res) => {
         console.log(`connected as id ${connection.threadId}`)
 
         const params = {
-            res: req.body.res,
-            pass: req.body.pass,
-            pending: req.body.pending,
-            role: req.body.role,
-            access: JSON.stringify(req.body.access),
-            added_by: req.body.added_by,
+            email: req.body.email.trim(),
+            name: `${req.body.name_last.trim()}, ${req.body.name_first.trim()} ${req.body.name_middle}`,
+            name_last: req.body.name_last.trim(),
+            name_first: req.body.name_first.trim(),
+            name_middle: req.body.name_middle.trim(),
+            bday: req.body.bday,
+            res: req.body.res.trim(),
+            mun: req.body.mun.trim(),
+            brgy: req.body.brgy.trim(),
+            prec: req.body.prec.trim(),
+            contact: req.body.contact.trim(),
+            picture: ``,
         }
 
         connection.query("UPDATE members SET ? WHERE uid = ?", [params, req.params.uid], (err, rows) => {
