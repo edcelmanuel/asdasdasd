@@ -61,13 +61,15 @@ const insertMember = (req, res) => {
         if (err) throw console.log(err)
         console.log(`connected as id ${connection.threadId}`)
 
+        bday = format(req.body.bday, "MM/dd/yyyy")
+
         const params = {
             email: req.body.email.trim(),
             name: `${req.body.name_last.trim()}, ${req.body.name_first.trim()} ${req.body.name_middle}`,
             name_last: req.body.name_last.trim(),
             name_first: req.body.name_first.trim(),
             name_middle: req.body.name_middle.trim(),
-            bday: format(req.body.bday, "MM/dd/yyyy"),
+            bday: bday,
             res: req.body.res.trim(),
             mun: req.body.mun.trim(),
             brgy: req.body.brgy.trim(),
