@@ -41,13 +41,18 @@ const getMemberByPage = (req, res) => {
 
                 let newRows = []
                 rows1.forEach(function (arrayItem) {
-                    const imageAsBase64 = fs.readFileSync(
-                        `public/public/membersPicture/` + `${arrayItem.uid}` + `.jpg`,
-                        "base64"
-                    )
-
-                    arrayItem.picture = imageAsBase64
-                    newRows.push(arrayItem)
+                    let imageAsBase64
+                    try {
+                        imageAsBase64 = fs.readFileSync(
+                            `public/public/membersPicture/` + `${arrayItem.uid}` + `.jpg`,
+                            "base64"
+                        )
+                        arrayItem.picture = imageAsBase64
+                        newRows.push(arrayItem)
+                    } catch (err) {
+                        arrayItem.picture = null
+                        newRows.push(arrayItem)
+                    }
                 })
 
                 res.json({ rows: newRows, count: count })
@@ -113,11 +118,14 @@ const insertMember = (req, res) => {
                                     return console.log(err)
                                 }
 
-                                var base64Data = base64Picture.replace(/^data:image\/jpeg;base64,/, "")
+                                var base64Data = base64Picture
+                                    ? base64Picture.replace(/^data:image\/jpeg;base64,/, "")
+                                    : null
 
-                                require("fs").writeFile(filepath, base64Data, "base64", function (err) {
-                                    console.log(err)
-                                })
+                                base64Data &&
+                                    require("fs").writeFile(filepath, base64Data, "base64", function (err) {
+                                        console.log(err)
+                                    })
 
                                 res.json({
                                     status: "success",
@@ -245,13 +253,18 @@ const searchMember = (req, res) => {
 
                         let newRows = []
                         rows1.forEach(function (arrayItem) {
-                            const imageAsBase64 = fs.readFileSync(
-                                `public/public/membersPicture/` + `${arrayItem.uid}` + `.jpg`,
-                                "base64"
-                            )
-
-                            arrayItem.picture = imageAsBase64
-                            newRows.push(arrayItem)
+                            let imageAsBase64
+                            try {
+                                imageAsBase64 = fs.readFileSync(
+                                    `public/public/membersPicture/` + `${arrayItem.uid}` + `.jpg`,
+                                    "base64"
+                                )
+                                arrayItem.picture = imageAsBase64
+                                newRows.push(arrayItem)
+                            } catch (err) {
+                                arrayItem.picture = null
+                                newRows.push(arrayItem)
+                            }
                         })
 
                         // console.log(newRows)
