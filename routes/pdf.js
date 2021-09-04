@@ -137,10 +137,12 @@ const getIDMemberPDF = async (req, res) => {
                         ],
                     }
 
+                    console.log("_1_")
+
                     var pdfDoc = printer.createPdfKitDocument(docDefinition)
                     // pdfDoc.pipe(fs.createWriteStream(filepath))
                     // await pdfDoc.end()
-                    console.log("_1_")
+                    console.log("_2_")
 
                     savePdfToFile(pdfDoc, filepath).then(() => {
                         pdf2base64(`public/public/membersId/` + `${uid}` + `.pdf`)
