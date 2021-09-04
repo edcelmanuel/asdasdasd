@@ -165,7 +165,8 @@ const deleteMemberByID = (req, res) => {
                 return console.log(err)
             }
 
-            // rows = rows.map(row => (row.access = JSON.parse(row.access), row));
+            console.log(`Member ${req.params.uid}`)
+
             res.json({
                 status: "success",
                 message: `Successfully Deleted`,
