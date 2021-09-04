@@ -2,6 +2,7 @@ const pool = require("./mydb")
 const { base64_encode } = require("./functions")
 const pdf2base64 = require("pdf-to-base64")
 const fs = require("fs")
+import { format } from "date-fns"
 
 const getAllMember = (req, res) => {
     pool.getConnection((err, connection) => {
@@ -66,7 +67,7 @@ const insertMember = (req, res) => {
             name_last: req.body.name_last.trim(),
             name_first: req.body.name_first.trim(),
             name_middle: req.body.name_middle.trim(),
-            bday: req.body.bday,
+            bday: format(req.body.bday, "MM/dd/yyyy"),
             res: req.body.res.trim(),
             mun: req.body.mun.trim(),
             brgy: req.body.brgy.trim(),
