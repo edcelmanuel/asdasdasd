@@ -207,8 +207,17 @@ const updateMember = (req, res) => {
             picture: ``,
         }
 
+        const base64Picture = req.body.picture
+
         connection.query("UPDATE members SET ? WHERE uid = ?", [params, req.params.uid], (err, rows) => {
             connection.release()
+
+            var base64Data = base64Picture ? base64Picture.replace(/^data:image\/jpeg;base64,/, "") : null
+
+            base64Data &&
+                require("fs").writeFile(filepath, base64Data, "base64", function (err) {
+                    console.log(err)
+                })
 
             if (err) {
                 res.sendStatus(400)
