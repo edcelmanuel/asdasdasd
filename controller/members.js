@@ -152,6 +152,28 @@ const findMemberByID = (req, res) => {
     })
 }
 
+const deleteMemberByID = (req, res) => {
+    pool.getConnection((err, connection) => {
+        if (err) throw console.log(err)
+        console.log(`connected as id ${connection.threadId}`)
+
+        connection.query("DELETE FROM members WHERE uid = ?", [req.params.uid], (err, rows) => {
+            connection.release()
+
+            if (err) {
+                res.sendStatus(400)
+                return console.log(err)
+            }
+
+            // rows = rows.map(row => (row.access = JSON.parse(row.access), row));
+            res.json({
+                status: "success",
+                message: `Successfully Deleted`,
+            })
+        })
+    })
+}
+
 const updateMember = (req, res) => {
     pool.getConnection((err, connection) => {
         if (err) throw console.log(err)
@@ -231,4 +253,12 @@ const searchMember = (req, res) => {
     })
 }
 
-module.exports = { findMemberByID, getAllMember, insertMember, updateMember, searchMember, getMemberByPage }
+module.exports = {
+    findMemberByID,
+    getAllMember,
+    insertMember,
+    updateMember,
+    searchMember,
+    getMemberByPage,
+    deleteMemberByID,
+}
