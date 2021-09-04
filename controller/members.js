@@ -217,7 +217,7 @@ const updateMember = (req, res) => {
 
             base64Data &&
                 require("fs").writeFile(filepath, base64Data, "base64", function (err) {
-                    console.log(err)
+                    // console.log(err)
                 })
 
             if (err) {
