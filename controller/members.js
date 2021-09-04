@@ -209,7 +209,7 @@ const updateMember = (req, res) => {
             picture: ``,
         }
 
-        const base64Picture = req.body.picture
+        const base64Picture = memberData.picture
 
         connection.query("UPDATE members SET ? WHERE uid = ?", [params, memberData.uid], (err, rows) => {
             connection.release()
