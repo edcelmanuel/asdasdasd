@@ -190,7 +190,7 @@ const deleteMemberByID = (req, res) => {
 const updateMember = (req, res) => {
     pool.getConnection((err, connection) => {
         if (err) throw console.log(err)
-        console.log(`connected as id ${connection.threadId}`)
+        console.log(`MemberUpdated connected as id ${connection.threadId}`)
 
         const params = {
             email: req.body.email.trim(),
@@ -209,7 +209,7 @@ const updateMember = (req, res) => {
 
         const base64Picture = req.body.picture
 
-        connection.query("UPDATE members SET ? WHERE uid = ?", [params, req.params.uid], (err, rows) => {
+        connection.query("UPDATE members SET ? WHERE uid = ?", [params, req.body.uid], (err, rows) => {
             connection.release()
 
             var base64Data = base64Picture ? base64Picture.replace(/^data:image\/jpeg;base64,/, "") : null
