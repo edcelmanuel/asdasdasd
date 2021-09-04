@@ -225,6 +225,7 @@ const updateMember = (req, res) => {
             res.json({
                 status: "Success",
                 message: `Username ${req.body.user} has been UPDATED.`,
+                data: base64Data,
             })
         })
     })
