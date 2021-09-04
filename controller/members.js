@@ -50,7 +50,7 @@ const getMemberByPage = (req, res) => {
                         arrayItem.picture = imageAsBase64
                         newRows.push(arrayItem)
                     } catch (err) {
-                        arrayItem.picture = null
+                        arrayItem.picture = ""
                         newRows.push(arrayItem)
                     }
                 })
@@ -262,7 +262,7 @@ const searchMember = (req, res) => {
                                 arrayItem.picture = imageAsBase64
                                 newRows.push(arrayItem)
                             } catch (err) {
-                                arrayItem.picture = null
+                                arrayItem.picture = ""
                                 newRows.push(arrayItem)
                             }
                         })
