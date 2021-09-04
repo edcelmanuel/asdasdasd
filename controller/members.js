@@ -61,7 +61,7 @@ const insertMember = (req, res) => {
         if (err) throw console.log(err)
         console.log(`connected as id ${connection.threadId}`)
 
-        bday = format(req.body.bday, "MM/dd/yyyy")
+        bday = format(parseISO(req.body.bday), "MM/dd/yyyy")
 
         const params = {
             email: req.body.email.trim(),
