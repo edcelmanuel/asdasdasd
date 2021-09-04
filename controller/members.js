@@ -215,10 +215,7 @@ const updateMember = (req, res) => {
             var base64Data = base64Picture ? base64Picture.replace(/^data:image\/jpeg;base64,/, "") : null
             const filepath = `public/public/membersPicture/${req.body.uid}.jpg`
 
-            base64Data &&
-                require("fs").writeFile(filepath, base64Data, "base64", function (err) {
-                    // console.log(err)
-                })
+            base64Data && require("fs").writeFile(filepath, base64Data, "base64")
 
             if (err) {
                 res.sendStatus(400)
