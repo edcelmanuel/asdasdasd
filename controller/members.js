@@ -193,7 +193,7 @@ const updateMember = (req, res) => {
         console.log(`MemberUpdated connected as id ${connection.threadId}`)
 
         const memberData = req.body.data
-        bday = format(parseISO(req.body.bday), "yyyy-MM-dd")
+        bday = format(parseISO(memberData.bday), "yyyy-MM-dd")
         const params = {
             email: memberData.email.trim(),
             name: `${memberData.name_last.trim()}, ${memberData.name_first.trim()} ${memberData.name_middle}`,
