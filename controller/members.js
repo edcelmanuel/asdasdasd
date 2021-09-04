@@ -2,7 +2,7 @@ const pool = require("./mydb")
 const { base64_encode } = require("./functions")
 const pdf2base64 = require("pdf-to-base64")
 const fs = require("fs")
-import { format } from "date-fns"
+const { format } = "date-fns"
 
 const getAllMember = (req, res) => {
     pool.getConnection((err, connection) => {
