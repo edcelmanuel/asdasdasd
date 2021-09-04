@@ -192,29 +192,30 @@ const updateMember = (req, res) => {
         if (err) throw console.log(err)
         console.log(`MemberUpdated connected as id ${connection.threadId}`)
 
+        const memberData = req.body.data
         bday = format(parseISO(req.body.bday), "yyyy-MM-dd")
         const params = {
-            email: req.body.email.trim(),
-            name: `${req.body.name_last.trim()}, ${req.body.name_first.trim()} ${req.body.name_middle}`,
-            name_last: req.body.name_last.trim(),
-            name_first: req.body.name_first.trim(),
-            name_middle: req.body.name_middle.trim(),
+            email: memberData.email.trim(),
+            name: `${memberData.name_last.trim()}, ${memberData.name_first.trim()} ${memberData.name_middle}`,
+            name_last: memberData.name_last.trim(),
+            name_first: memberData.name_first.trim(),
+            name_middle: memberData.name_middle.trim(),
             bday: bday,
-            res: req.body.res.trim(),
-            mun: req.body.mun.trim(),
-            brgy: req.body.brgy.trim(),
-            prec: req.body.prec.trim(),
-            contact: req.body.contact.trim(),
+            res: memberData.res.trim(),
+            mun: memberData.mun.trim(),
+            brgy: memberData.brgy.trim(),
+            prec: memberData.prec.trim(),
+            contact: memberData.contact.trim(),
             picture: ``,
         }
 
         const base64Picture = req.body.picture
 
-        connection.query("UPDATE members SET ? WHERE uid = ?", [params, req.body.uid], (err, rows) => {
+        connection.query("UPDATE members SET ? WHERE uid = ?", [params, memberData.uid], (err, rows) => {
             connection.release()
 
             var base64Data = base64Picture ? base64Picture.replace(/^data:image\/jpeg;base64,/, "") : null
-            const filepath = `public/public/membersPicture/${req.body.uid}.jpg`
+            const filepath = `public/public/membersPicture/${memberData.uid}.jpg`
 
             base64Data &&
                 require("fs").writeFile(filepath, base64Data, "base64", function (err) {
