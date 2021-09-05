@@ -248,7 +248,7 @@ const searchMember = (req, res) => {
             "SELECT * FROM members WHERE uid like ? OR name_first like ? OR name_middle like ? OR name_last like ? OR res like ? OR mun like ? OR brgy like ? OR prec like ? OR email like ? LIMIT ? ,10;",
             [search, search, search, search, search, search, search, search, search, page],
             (err, rows1) => {
-                connection.release()
+                connection.destroy()
 
                 let count
 
@@ -256,7 +256,7 @@ const searchMember = (req, res) => {
                     "SELECT count(*) as count FROM members WHERE uid like ? OR name_first like ? OR name_middle like ? OR name_last like ? OR res like ? OR mun like ? OR brgy like ? OR prec like ? OR email like ?",
                     [search, search, search, search, search, search, search, search, search, page],
                     (err, rows2) => {
-                        connection.release()
+                        connection.destroy()
 
                         count = rows2[0].count
 

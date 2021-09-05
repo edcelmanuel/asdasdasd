@@ -69,98 +69,79 @@ const getIDMemberPDF = async (req, res) => {
 
             const filepath = `public/public/membersId/${uid.toString()}.pdf`
 
-            fs.stat(filepath, async (err, stat) => {
-                if (err == null) {
-                    pdf2base64(`public/public/membersId/` + `${uid}` + `.pdf`)
-                        .then((response) => {
-                            res.json({
-                                status: "success",
-                                message: `ID USed`,
-                                pdf: response,
-                            })
-                            // res.send(response)
+            // file does not exist
+            const data = rows[0]
+
+            var docDefinition = {
+                pageMargins: [0, 0, 0, 0],
+                pageSize: {
+                    width: 595.28,
+                    height: 300.28,
+                },
+                content: [
+                    {
+                        // under NodeJS (or in case you use virtual file system provided by pdfmake)
+                        // you can also pass file names here
+                        image: "assets/id.jpg",
+                        absolutePosition: { x: 0, y: 0 },
+                        width: 595.28,
+                        height: 300.28,
+                    },
+                    {
+                        // under NodeJS (or in case you use virtual file system provided by pdfmake)
+                        // you can also pass file names here
+                        image: `public/public/membersPicture/${data.uid.toString()}.jpg`,
+                        absolutePosition: { x: 16, y: 99 },
+                        width: 175.28,
+                        height: 142.28,
+                    },
+                    {
+                        text: titleCase(data.name.replace(/(\r\n|\n|\r)/gm, " ")),
+                        absolutePosition: { x: 210, y: 115 },
+                    },
+                    {
+                        text: titleCase(data.res.replace(/(\r\n|\n|\r)/gm, " ")),
+                        absolutePosition: { x: 210, y: 150 },
+                    },
+                    {
+                        text: titleCase(data.brgy.replace(/(\r\n|\n|\r)/gm, " ")),
+                        absolutePosition: { x: 210, y: 185 },
+                    },
+                    {
+                        text: titleCase(data.mun.replace(/(\r\n|\n|\r)/gm, " ")),
+                        absolutePosition: { x: 400, y: 185 },
+                    },
+                    {
+                        text: titleCase(data.uid.toString()).padStart(8, "0"),
+                        absolutePosition: { x: 330, y: 270 },
+                    },
+                    {
+                        text: titleCase(data.prec.replace(/(\r\n|\n|\r)/gm, " ")),
+                        absolutePosition: { x: 400, y: 270 },
+                    },
+                ],
+            }
+
+            console.log("_1_")
+
+            var pdfDoc = printer.createPdfKitDocument(docDefinition)
+            // pdfDoc.pipe(fs.createWriteStream(filepath))
+            // await pdfDoc.end()
+            console.log("_2_")
+
+            savePdfToFile(pdfDoc, filepath).then(() => {
+                pdf2base64(`public/public/membersId/` + `${uid}` + `.pdf`)
+                    .then((response) => {
+                        console.log(__dirname) //cGF0aC90by9maWxlLmpwZw==
+                        res.json({
+                            status: "success",
+                            message: `ID Created`,
+                            pdf: response,
                         })
-                        .catch((error) => {
-                            console.log(error) //Exepection error....
-                        })
-                } else if (err.code === "ENOENT") {
-                    // file does not exist
-                    const data = rows[0]
-
-                    var docDefinition = {
-                        pageMargins: [0, 0, 0, 0],
-                        pageSize: {
-                            width: 595.28,
-                            height: 300.28,
-                        },
-                        content: [
-                            {
-                                // under NodeJS (or in case you use virtual file system provided by pdfmake)
-                                // you can also pass file names here
-                                image: "assets/id.jpg",
-                                absolutePosition: { x: 0, y: 0 },
-                                width: 595.28,
-                                height: 300.28,
-                            },
-                            {
-                                // under NodeJS (or in case you use virtual file system provided by pdfmake)
-                                // you can also pass file names here
-                                image: `public/public/membersPicture/${data.uid.toString()}.jpg`,
-                                absolutePosition: { x: 16, y: 99 },
-                                width: 175.28,
-                                height: 142.28,
-                            },
-                            {
-                                text: titleCase(data.name.replace(/(\r\n|\n|\r)/gm, " ")),
-                                absolutePosition: { x: 210, y: 115 },
-                            },
-                            {
-                                text: titleCase(data.res.replace(/(\r\n|\n|\r)/gm, " ")),
-                                absolutePosition: { x: 210, y: 150 },
-                            },
-                            {
-                                text: titleCase(data.brgy.replace(/(\r\n|\n|\r)/gm, " ")),
-                                absolutePosition: { x: 210, y: 185 },
-                            },
-                            {
-                                text: titleCase(data.mun.replace(/(\r\n|\n|\r)/gm, " ")),
-                                absolutePosition: { x: 400, y: 185 },
-                            },
-                            {
-                                text: titleCase(data.uid.toString()).padStart(8, "0"),
-                                absolutePosition: { x: 330, y: 270 },
-                            },
-                            {
-                                text: titleCase(data.prec.replace(/(\r\n|\n|\r)/gm, " ")),
-                                absolutePosition: { x: 400, y: 270 },
-                            },
-                        ],
-                    }
-
-                    console.log("_1_")
-
-                    var pdfDoc = printer.createPdfKitDocument(docDefinition)
-                    // pdfDoc.pipe(fs.createWriteStream(filepath))
-                    // await pdfDoc.end()
-                    console.log("_2_")
-
-                    savePdfToFile(pdfDoc, filepath).then(() => {
-                        pdf2base64(`public/public/membersId/` + `${uid}` + `.pdf`)
-                            .then((response) => {
-                                console.log(__dirname) //cGF0aC90by9maWxlLmpwZw==
-                                res.json({
-                                    status: "success",
-                                    message: `ID Created`,
-                                    pdf: response,
-                                })
-                            })
-                            .catch((error) => {
-                                console.log(error) //Exepection error....
-                            })
                     })
-                } else {
-                    console.log("Some other error: ", err.code)
-                }
+                    .catch((error) => {
+                        console.log(error) //Exepection error....
+                    })
             })
         })
     })
